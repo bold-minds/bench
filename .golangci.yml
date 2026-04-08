@@ -1,19 +1,60 @@
+version: "2"
 run:
-  timeout: 5m
-
+  relative-path-mode: wd
 linters:
+  default: none
   enable:
-    - govet
+    - depguard
     - errcheck
+    - godox
+    - gosec
+    - govet
+    - ineffassign
     - staticcheck
     - unused
-    - gosimple
-    - ineffassign
-    - typecheck
-    - gofmt
-    - misspell
-    - predeclared
-
-linters-settings:
-  errcheck:
-    check-type-assertions: true
+  settings:
+    depguard:
+      rules:
+        main:
+          files:
+            - $all
+            - "!$test"
+          allow:
+            - $gostd
+            - gopkg.in/yaml.v3
+            - github.com/spf13/cobra
+            - github.com/spf13/pflag
+            - github.com/bold-minds/bench
+        tests:
+          files:
+            - $test
+          allow:
+            - $gostd
+            - gopkg.in/yaml.v3
+            - github.com/bold-minds/bench
+    errcheck:
+      check-type-assertions: true
+    govet:
+      disable:
+        - fieldalignment
+      enable-all: true
+      settings:
+        shadow:
+          strict: true
+  exclusions:
+    generated: lax
+    presets:
+      - comments
+      - common-false-positives
+      - legacy
+      - std-error-handling
+    rules:
+      - linters:
+          - gosec
+          - errcheck
+        path: _test\.go
+issues:
+  max-same-issues: 50
+formatters:
+  exclusions:
+    generated: lax
