@@ -1,0 +1,30 @@
+# {{ .Package }} Benchmarks
+
+## Latest Results
+
+| Benchmark | ns/op | B/op | allocs/op |
+|-----------|------:|-----:|----------:|
+{{- range .Latest }}
+| {{ .Name }} | {{ formatFloat .NsOp }} | {{ .BOp }} | {{ .AllocsOp }} |
+{{- end }}
+
+## Historical Comparison
+
+{{- range .Benchmarks }}
+
+### {{ .Name }}
+
+| Date | ns/op | B/op | allocs/op | Delta ns/op |
+|------|------:|-----:|----------:|------------:|
+{{- range .Entries }}
+| {{ .Date }} | {{ formatFloat .NsOp }} | {{ .BOp }} | {{ .AllocsOp }} | {{ formatDelta .DeltaNsOp }} |
+{{- end }}
+{{- end }}
+
+## How to Run
+
+```sh
+go test -benchmem -run=^$ -bench ^Benchmark {{ .Package }}
+```
+
+Last updated: {{ .LastUpdated }}
